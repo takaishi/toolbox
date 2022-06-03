@@ -2,9 +2,9 @@
 
 require 'bundler/inline'
 
-gemfile do
+gemfile true do
   source 'https://rubygems.org'
-  require 'octokit'
+  gem 'octokit', require: true
 end
 
 
@@ -15,7 +15,11 @@ repos = client.organization_repositories(ENV['GITHUB_ORG'], type: 'all')
 
 repos.each do |repo|
   p repo[:full_name]
-  unless Dir.exists?("#{ENV['HOME']}/src/github.com/#{repo[:full_name]}")
+  if Dir.exists?("#{ENV['HOME']}/src/github.com/#{repo[:full_name]}")
+    Dir.chdir("#{ENV['HOME']}/src/github.com/#{repo[:full_name]}") do
+      p `git fetch`
+    end
+  else
     p `git clone #{repo[:ssh_url]} #{ENV['HOME']}/src/github.com/#{repo[:full_name]}`
   end
 end
