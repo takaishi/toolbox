@@ -1,7 +1,13 @@
 #!/usr/bin/env ruby
 # Copy from https://github.com/hsbt/hsbt/blob/master/libexec/dev-source-update
 
-require 'parallel'
+require 'bundler/inline'
+
+gemfile true do
+  source 'https://rubygems.org'
+  gem 'parallel', require: true
+end
+
 
 Dir.chdir(`ghq root`.chomp) do
   Parallel.map(`ghq list`.split.shuffle) do |dir|
